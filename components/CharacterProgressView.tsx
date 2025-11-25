@@ -6,11 +6,13 @@ import { Cat } from './Cat';
 import { CatFoodTower } from './CatFoodTower';
 import { Dragon } from './Dragon';
 import { TreasureHoard } from './TreasureHoard';
+import { Shibusawa } from './Shibusawa';
+import { MoneyStack } from './MoneyStack';
 import { SpeechBubble } from './SpeechBubble';
 import { SUCCESS_QUOTES } from '../constants/successQuotes';
 
 interface CharacterProgressViewProps {
-    character: 'HAMSTER' | 'CAT' | 'DRAGON';
+    character: 'HAMSTER' | 'CAT' | 'DRAGON' | 'SHIBUSAWA';
     progress: number;
     isActive: boolean;
     mode: 'FOCUS' | 'BREAK';
@@ -78,6 +80,11 @@ export const CharacterProgressView: React.FC<CharacterProgressViewProps> = ({
                 <>
                     <CatFoodTower progress={isDead ? 0 : progress} />
                     <Cat isActive={isActive && mode === 'FOCUS'} isDead={isDead} />
+                </>
+            ) : character === 'SHIBUSAWA' ? (
+                <>
+                    <MoneyStack progress={isDead ? 0 : progress} />
+                    <Shibusawa isActive={isActive && mode === 'FOCUS'} isDead={isDead} />
                 </>
             ) : (
                 <>

@@ -1,6 +1,7 @@
-import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, Switch, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { default as Slider } from '@react-native-community/slider';
 import { useSettings, CharacterType, ThemeType } from '../contexts/SettingsContext';
 
 interface SettingsModalProps {
@@ -69,6 +70,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
                                 <Text style={styles.optionEmoji}>🐲</Text>
                                 <Text style={[styles.optionText, character === 'DRAGON' && styles.optionTextSelected]}>Dragon</Text>
                             </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[
+                                    styles.optionButton,
+                                    character === 'SHIBUSAWA' && styles.optionSelected
+                                ]}
+                                onPress={() => setCharacter('SHIBUSAWA')}
+                            >
+                                <Text style={styles.optionEmoji}>💴</Text>
+                                <Text style={[styles.optionText, character === 'SHIBUSAWA' && styles.optionTextSelected]}>渋沢栄一</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
 
@@ -87,26 +99,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
                     {/* Timer Duration */}
                     <View style={styles.section}>
                         <Text style={[styles.sectionTitle, isDark && styles.textDark]}>Focus Duration (min)</Text>
-                        <View style={styles.row}>
-                            <TouchableOpacity
-                                style={styles.adjustButton}
-                                onPress={() => setFocusDuration(Math.max(1, focusDuration - 1))}
-                            >
-                                <Ionicons name="remove" size={24} color={isDark ? '#fff' : '#333'} />
-                            </TouchableOpacity>
-
-                            <View style={styles.durationDisplay}>
-                                <Text style={[styles.durationValue, isDark && styles.textDark]}>{focusDuration}</Text>
+                        <View style={styles.sliderContainer}>
+                            <Text style={[styles.sliderLabel, isDark && styles.textDark]}>1</Text>
+                            <Slider
+                                style={styles.slider}
+                                minimumValue={1}
+                                maximumValue={120}
+                                step={1}
+                                value={focusDuration}
+                                onValueChange={setFocusDuration}
+                                minimumTrackTintColor="#4CAF50"
+                                maximumTrackTintColor={isDark ? '#555' : '#ddd'}
+                                thumbTintColor="#4CAF50"
+                            />
+                            <Text style={[styles.sliderLabel, isDark && styles.textDark]}>120</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => {
+                            // Focus on the input field would go here
+                            // For now, we'll just show the current value
+                        }}>
+                            <View style={styles.durationDisplayLarge}>
+                                <Text style={[styles.durationValueLarge, isDark && styles.textDark]}>{focusDuration}</Text>
                                 <Text style={[styles.durationUnit, isDark && styles.textDark]}>min</Text>
                             </View>
-
-                            <TouchableOpacity
-                                style={styles.adjustButton}
-                                onPress={() => setFocusDuration(focusDuration + 1)}
-                            >
-                                <Ionicons name="add" size={24} color={isDark ? '#fff' : '#333'} />
-                            </TouchableOpacity>
-                        </View>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
@@ -233,5 +249,37 @@ const styles = StyleSheet.create({
     },
     durationTextSelected: {
         color: '#fff',
+    },
+    sliderContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        marginVertical: 8,
+    },
+    slider: {
+        flex: 1,
+        height: 40,
+    },
+    sliderLabel: {
+        fontSize: 14,
+        color: '#666',
+        fontWeight: '500',
+        minWidth: 30,
+        textAlign: 'center',
+    },
+    durationDisplayLarge: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        justifyContent: 'center',
+        gap: 4,
+        padding: 12,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 12,
+        marginTop: 8,
+    },
+    durationValueLarge: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        color: '#333',
     },
 });

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type CharacterType = 'HAMSTER' | 'CAT' | 'DRAGON';
+export type CharacterType = 'HAMSTER' | 'CAT' | 'DRAGON' | 'SHIBUSAWA';
 export type ThemeType = 'LIGHT' | 'DARK';
 
 interface SettingsContextType {
