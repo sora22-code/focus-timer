@@ -33,12 +33,14 @@ export const useTimer = ({
     }, [mode, focusDuration, breakDuration]);
 
     const [isDead, setIsDead] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const appState = useRef(AppState.currentState);
 
     const toggleTimer = useCallback(() => {
         if (isDead) setIsDead(false); // Revive on start
+        if (isSuccess) setIsSuccess(false); // Clear success on new start
         setIsActive((prev) => !prev);
-    }, [isDead]);
+    }, [isDead, isSuccess]);
 
     useEffect(() => {
         if (isActive && timeLeft > 0) {
@@ -48,6 +50,7 @@ export const useTimer = ({
         } else if (timeLeft === 0) {
             if (timerRef.current) clearInterval(timerRef.current);
             setIsActive(false);
+            setIsSuccess(true); // Mark as successful completion
             if (onTimerComplete) onTimerComplete(mode);
         }
 
@@ -74,6 +77,7 @@ export const useTimer = ({
             ) {
                 console.log('App went to background. Killing character.');
                 setIsDead(true);
+                setIsSuccess(false); // Not a success if interrupted
                 resetTimer(); // Reset timer immediately
             }
             appState.current = nextAppState;
@@ -85,6 +89,7 @@ export const useTimer = ({
                 if (isActive && mode === 'FOCUS') {
                     console.log('Window blurred. Killing character.');
                     setIsDead(true);
+                    setIsSuccess(false); // Not a success if interrupted
                     resetTimer(); // Reset timer immediately
                 }
             };
@@ -93,6 +98,7 @@ export const useTimer = ({
                 if (document.visibilityState === 'hidden' && isActive && mode === 'FOCUS') {
                     console.log('Tab hidden. Killing character.');
                     setIsDead(true);
+                    setIsSuccess(false); // Not a success if interrupted
                     resetTimer(); // Reset timer immediately
                 }
             };
@@ -125,6 +131,7 @@ export const useTimer = ({
         mode,
         progress,
         isDead,
+        isSuccess,
         toggleTimer,
         resetTimer,
         switchMode,

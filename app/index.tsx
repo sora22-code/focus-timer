@@ -26,6 +26,7 @@ const TimerApp = () => {
         mode,
         progress,
         isDead,
+        isSuccess,
         toggleTimer,
         resetTimer,
         switchMode,
@@ -39,6 +40,11 @@ const TimerApp = () => {
 
     const isDark = theme === 'DARK';
     const bgStyle = isDark ? styles.containerDark : styles.containerLight;
+
+    const handleClearSuccess = () => {
+        // Just clicking clears the success message, no state change needed
+        // The isSuccess will be cleared when user starts a new timer
+    };
 
     return (
         <SafeAreaView style={[styles.container, bgStyle]}>
@@ -57,7 +63,9 @@ const TimerApp = () => {
                     progress={progress}
                     character={character}
                     isDead={isDead}
+                    isSuccess={isSuccess}
                     onCalmDown={() => setIsDead(false)}
+                    onClearSuccess={handleClearSuccess}
                 />
 
                 <TimerDisplay secondsLeft={timeLeft} />

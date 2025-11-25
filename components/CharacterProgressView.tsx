@@ -7,6 +7,7 @@ import { CatFoodTower } from './CatFoodTower';
 import { Dragon } from './Dragon';
 import { TreasureHoard } from './TreasureHoard';
 import { SpeechBubble } from './SpeechBubble';
+import { SUCCESS_QUOTES } from '../constants/successQuotes';
 
 interface CharacterProgressViewProps {
     character: 'HAMSTER' | 'CAT' | 'DRAGON';
@@ -14,7 +15,9 @@ interface CharacterProgressViewProps {
     isActive: boolean;
     mode: 'FOCUS' | 'BREAK';
     isDead: boolean;
+    isSuccess: boolean;
     onCalmDown: () => void;
+    onClearSuccess: () => void;
 }
 
 const DEATH_TEXTS = [
@@ -31,9 +34,12 @@ export const CharacterProgressView: React.FC<CharacterProgressViewProps> = ({
     isActive,
     mode,
     isDead,
-    onCalmDown
+    isSuccess,
+    onCalmDown,
+    onClearSuccess
 }) => {
     const [deathText, setDeathText] = useState("");
+    const [successText, setSuccessText] = useState("");
 
     useEffect(() => {
         if (isDead) {
@@ -42,9 +48,26 @@ export const CharacterProgressView: React.FC<CharacterProgressViewProps> = ({
         }
     }, [isDead]);
 
+    useEffect(() => {
+        if (isSuccess) {
+            const quotes = SUCCESS_QUOTES[character];
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            setSuccessText(randomQuote);
+        }
+    }, [isSuccess, character]);
+
+    const handlePress = () => {
+        if (isDead) {
+            onCalmDown();
+        } else if (isSuccess) {
+            onClearSuccess();
+        }
+    };
+
     return (
-        <TouchableOpacity activeOpacity={1} onPress={onCalmDown} style={styles.container}>
+        <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.container}>
             <SpeechBubble text={deathText} visible={isDead} />
+            <SpeechBubble text={successText} visible={isSuccess} />
 
             {character === 'HAMSTER' ? (
                 <>
